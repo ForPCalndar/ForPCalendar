@@ -1,7 +1,7 @@
 import taskData from "./taskData.js";
 import getCategory from "./getCategory.js";
 import createTaskLi from "./detailListCreateLi.js";
-import { selectedDay, $taskList } from "./detailList.js";
+import { selectedDay, $taskList, setListNull } from "./detailList.js";
 
 // 추가 버튼
 
@@ -74,27 +74,23 @@ $addTaskModalSubmitBtn.addEventListener("click", () => {
 
   // 날짜
   const date = new Date($dateInput.value);
+  console.log("date:"+date);
+
   const dateSet = {
     year: String(date.getFullYear()),
     month: String(date.getMonth() + 1).padStart(2, "0"),
     day: String(date.getDate()).padStart(2, "0"),
   };
   const { year, month, day } = dateSet;
-  // console.log(year, month, day);
+  console.log(year, month, day);
   // 시간
   const time = $timeInput.value;
   const [hour, minute] = time.split(":");
 
-  const matchingData = (obj) => {
-    // console.log("obj:", obj);
-    if (obj === null) return;
-    return (
-      year === obj.date.year && month === obj.date.month && day === obj.date.day
-    );
-  };
   // 같은 날짜의 데이터 찾기
-  const matchedDayTaskData = taskData.find((task) => matchingData(task));
-  // console.log('matching: ',matchingData(task));
+  let matchedDayTaskData = false;
+  matchedDayTaskData = taskData.find((task) => year === task.date.year && month === task.date.month && day === task.date.day);
+  console.log('matching: ',matchedDayTaskData);
 
   const newTodoList = {
     time: `${hour}:${minute}`,
@@ -104,9 +100,13 @@ $addTaskModalSubmitBtn.addEventListener("click", () => {
 
   // 데이터 푸시
   if (matchedDayTaskData) {
-    // 같은 날짜의 데이터가 있다면
+    console.log('있');
+ 
     matchedDayTaskData.todoList.push(newTodoList);
+
+
   } else {
+    console.log('없');
     // 같은 날짜의 데이터가 없다면
     const newTaskData = {
       id: taskData.length + 1,
@@ -118,15 +118,25 @@ $addTaskModalSubmitBtn.addEventListener("click", () => {
       todoList: [newTodoList],
     };
     taskData.push(newTaskData);
+
+
   }
   // // 현재 선택된 날짜의 투두 리스트 추가시 ui 추가
   // console.log("sd:", selectedDay);
-
   $taskList.append(createTaskLi(newTodoList));
-
-  $addTaskModal.classList.remove("is-active");
-
+  // $taskList.textContent='ddf'
+  console.log(createTaskLi(newTodoList));
   setModalInitaial();
+  const $nothingLi = document.querySelector(
+    "#task_list .task_list-item-nothing"
+  );
+  if ($nothingLi){
+    $nothingLi.style.display = "none";
+
+  }
+  // setListNull()
+  // $addTaskModal.classList.remove("is-active");
+
   // console.log(taskData);
 });
 export {setModalInitaial,$addTaskModal}

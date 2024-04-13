@@ -28,15 +28,18 @@
     justify-content: space-between;
     
     transition: height 0.5s ease;
-    height: 95vh;
-
-    /* bottom: 0; */
-
-    bottom: -100%;
-    transition: bottom .8s ease-out;
+    height: 90vh;
+    border-radius: 20px;
+    overflow: hidden;
+    opacity: 0;
+    bottom: 5vh;
+    transition: all .4s ease-out;
+    pointer-events: none;
 }
 #chatbot-container.is-active{
-    bottom: 0;
+    opacity:  1;
+    pointer-events: all;
+
 
 }
 .actionBox_wrap{
@@ -67,7 +70,7 @@
     color: #F2F2F2;
     display: flex;
     justify-content: space-evenly;
-    
+    flex-shrink: 0;
 }
 
 #chatbot-container .actionBox.side#top .top-section{

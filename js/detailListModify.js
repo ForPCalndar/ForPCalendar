@@ -37,7 +37,7 @@ function getSelectedLi(e){
   };
 }
 $taskList.addEventListener("click", (e) => {
-  if (!e.target.closest("li").matches(".task_list-item")) return;
+  if (!e.target.closest(".task_list-item")) return;
 
   e.stopPropagation();
   $addTaskModal.classList.remove('is-active')

@@ -38,7 +38,7 @@ function countCategory(date){
 //x누르면 화면 내리기
 $close.addEventListener("click", (e) => {
     console.log(e.target);
-    $chatbotContainer.classList.add("hidden");
+    $chatbotContainer.classList.remove("is-active");
 });
 
 // 보내기버튼 활성화

@@ -8,7 +8,14 @@ let selectedDay = null;
 
 $calendarDates.forEach(($date) => {
   $date.addEventListener("click", (e) => {
-    selctedDateData = getDateDatas(e.target);
+
+    if (!e.target.closest('.date')) return;
+    e.stopPropagation()
+
+    const target = e.target.closest('.date')
+    // console.log('target :',target);
+
+    selctedDateData = getDateDatas(target);
     // console.log("selctedDateData:", selctedDateData);
     $taskModal.classList.add("is-active");
 
@@ -19,7 +26,7 @@ $calendarDates.forEach(($date) => {
           task.date.day === selctedDateData.day
         );
       });
-      // console.log("selectedDay =" + JSON.stringify(selectedDay));
+      console.log("selectedDay =" + JSON.stringify(selectedDay));
       // h3 설정
       const $h3Date = document.getElementById("h2Date");
       $h3Date.innerHTML = `${selctedDateData.month}월 ${selctedDateData.day}일`;
@@ -61,8 +68,8 @@ const $listItmes = document.querySelectorAll('#task_list .task_list-item')
 // 리스트 추가 메서드
 function addList() {
  
-  if (selectedDay?.todoList) {
-    selectedDay?.todoList.forEach((task) => {
+  if (selectedDay) {
+    selectedDay.todoList.forEach((task) => {
       $taskList.append(createTaskLi(task));
     });
   }
