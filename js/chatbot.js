@@ -16,8 +16,11 @@ var dateObject = {};
 var titleByUserViaInput = ``;
 var categoryViaChat = '';
 
-// 함수 정의
 
+// 함수 정의
+$close.addEventListener('click', (e)=>{
+    $chatbotContainer.classList.remove('is-active');
+});
 
 //==================== 날짜 입력받는 폼 =============//
 
@@ -66,20 +69,19 @@ function getRecentData(dateObject) {
     }
 
     let recentData = [];
-    let boundary = 7;
     if (targetIndex > -1) {
         // 타겟 인덱스가 0보다 큰 경우에만 처리
-        if (targetIndex < 7) {
-            for (let i = 0; i < targetIndex; i++) {
+        if(targetIndex <= 3){
+            for (let i = 0; i <= targetIndex; i++) {
                 recentData.push(taskData[i]);
             }
-        } else {
-            for (let i = targetIndex; i < targetIndex + boundary; i++) {
+        }
+        else {
+            for (let i = targetIndex-2; i < targetIndex+3; i++) {
                 recentData.push(taskData[i]);
             }
         }
     }
-    // console.log(targetIndex);
     return { targetIndex, recentData };
 }
 
@@ -149,23 +151,29 @@ function checkSchedule({ targetIndex, recentData }) {
 //===================2. 스케줄 추가 ================//
 function getUserInputTitle() {
     const $categoryOptions = document.getElementById('categoryOptions');
-    const $Cbuttons = $categoryOptions.querySelector('button');
+    const $Cbuttons = $categoryOptions.querySelectorAll('button');
 
-    $Cbuttons.addEventListener('click', ()=>{
-        const $askTitle = document.createElement('div');
-        $askTitle.classList.add('callyResponse');
-        $askTitle.innerHTML = '추가하고 싶은 일의 제목을 채팅으로 보내주세요.<br>캘리가 자동으로 캘린더에 추가해드릴게요;)';
-        $response.appendChild($askTitle);
-        
-        $input.addEventListener('submit', (e)=>{
-            e.preventDefault();
-            titleByUserViaInput = $input.querySelector('input').value;
+    // 각 버튼에 대해 클릭 이벤트를 추가합니다.
+    $Cbuttons.forEach($button => {
+        $button.addEventListener('click', () => {
+            const $askTitle = document.createElement('div');
+            $askTitle.classList.add('callyResponse');
+            $askTitle.innerHTML = '추가하고 싶은 일의 제목을 채팅으로 보내주세요.<br>캘리가 자동으로 캘린더에 추가해드릴게요;)';
+            $response.appendChild($askTitle);
+
+
+            $input.addEventListener('submit', (e)=>{
+                e.preventDefault();
+                titleByUserViaInput = $input.querySelector('input').value;
+                
+            });
+            $arrow.addEventListener('click', (e) =>{
+                e.preventDefault();
+                titleByUserViaInput = $input.querySelector('input').value;
+
+            });
         });
-        $arrow.addEventListener('click', (e) =>{
-            e.preventDefault();
-            titleByUserViaInput = $input.querySelector('input').value;
-        });
-    })
+    });
 }
 
 // 채팅에서 새로운 스케줄 추가
@@ -197,78 +205,29 @@ function returnCheckedCateogry(){
         $button.addEventListener('click', () => {
             // 클릭된 버튼에 'checkedCt' 클래스 추가
             $buttons.forEach(btn => btn.classList.remove('checkedCt'));
-            $button.classList.add('checkedCt');
+            categoryViaChat = $button.textContent;
         });
     });
 }
     
-    // console.log(category);
-    // return category;
-// 할 일, 카테고리 입력 받기
-// 입력받은 값 todo list에  또다른 객체로 추가
-
-// function addNewTodoViaChat(dateObject){
-//     console.log('ddfsdfasdfasdf',dateObject);
-//     returnCheckedCateogry();
-//     getUserInputTitle();
-//     console.log(titleByUserViaInput);
-//     console.log(categoryViaChat);
-//     let targetDateObject = false;
-//     const {year: Dyear, month: Dmonth, day: Dday, hour : Dhour, min : Dmin} = dateObject;
-
-//     for (let index = 0; index < taskData.length; index++) {
-//         let { year: Eyear, month: Emonth, day: Eday } = taskData[index].date;
-//         if (Eyear === Dyear && Emonth === Dmonth && parseInt(Eday) === parseInt(Dday)){
-//             targetDateObject = taskData[index];
-//         }
-//     }
-      
-//     // 입력 받은 날짜에 이미 일정이 있는지 확인, 있으면 그 객체에 todoList 객체 하나만 {time: time, title:title, category}추가하면 됨.
-//     // 없으면 TodoViaChat를 taskData에 push
-//       // 입력 받은 날짜에 해당하는 객체 찾기
-      
-
-//       if (targetDateObject) {
-//           // 입력 받은 날짜에 이미 일정이 있는 경우
-//           targetDateObject.todoList.push({
-//               time: `${Dhour}:${Dmin}`,
-//               title: titleByUserViaInput,
-//               category: categoryViaChat,
-//           });
-//       } else {
-//           // 입력 받은 날짜에 일정이 없는 경우
-//           const newTodo = {
-//               id: taskData.length + 1,
-//               date: {
-//                   year: Dyear,
-//                   month: Dmonth,
-//                   day: Dday
-//               },
-//               todoList: [
-//                   {
-//                       time: `${Dhour}:${Dmin}`,
-//                       title: titleByUserViaInput,
-//                       category: categoryViaChat,
-//                   },
-//               ]
-//           };
-//           taskData.push(newTodo);
-//       }
-// }
-
 // 채팅에서 새로운 스케줄 추가
 function addNewTodoViaChat(dateObject) {
+    returnCheckedCateogry();
     getUserInputTitle(); // 카테고리 선택 이벤트 설정
 
     // '확인' 버튼 클릭 시
     const $confirmButton = document.getElementById("confirm");
     $confirmButton.addEventListener("click", () => {
-        const category = document.querySelector('.checkedCt').textContent;
-        const title = document.getElementById('input').value;
+        // const category = document.querySelector('.checkedCt').textContent;
+        // const title = document.getElementById('input').value;
         
         // 입력 받은 값이 유효한지 확인
-        if (!category || !title) {
+        if (!categoryViaChat || !titleByUserViaInput) {
             console.error('카테고리와 제목을 선택해주세요.');
+            const $valueOfUserInput = document.createElement("div");
+            $valueOfUserInput.classList.add("callyResponse");
+            $valueOfUserInput.innerHTML = `카테고리와 제목을 입력해주세요`;
+            $response.appendChild($valueOfUserInput);
             return;
         }
 
@@ -284,8 +243,8 @@ function addNewTodoViaChat(dateObject) {
             // 입력 받은 날짜에 이미 일정이 있는 경우
             targetDateObject.todoList.push({
                 time: `${hour}:${minute}`,
-                title: title,
-                category: category
+                title: titleByUserViaInput,
+                category: categoryViaChat,
             });
         } else {
             // 입력 받은 날짜에 일정이 없는 경우
@@ -299,13 +258,18 @@ function addNewTodoViaChat(dateObject) {
                 todoList: [
                     {
                         time: `${hour}:${minute}`,
-                        title: title,
-                        category: category
-                    }
+                        title: titleByUserViaInput,
+                        category: categoryViaChat,
+                    },
                 ]
             };
             taskData.push(newTodo);
         }
+
+        const $valueOfUserInput = document.createElement("div");
+        $valueOfUserInput.classList.add("callyResponse");
+        $valueOfUserInput.innerHTML = `해당 일에 ${titleByUserViaInput} 일정을 추가할게요!`;
+        $response.appendChild($valueOfUserInput);
 
         console.log('일정이 추가되었습니다.');
     });
@@ -314,84 +278,91 @@ function addNewTodoViaChat(dateObject) {
 
 
 // ===============챗봇 추천 파트==================//
+function getRecentCategory(dateObject){
+    const { year, month } = dateObject;
+    const recentCategory = [];
+
+    for (let i = 0; i < taskData.length; i++) {
+        const { date, todoList } = taskData[i];
+        const { year: taskYear, month: taskMonth } = date;
+
+        // 입력받은 날짜의 연도와 월이 해당 taskData의 연도와 월과 같으면 카테고리를 추가
+        if (year === taskYear && month === taskMonth) {
+            for (let j = 0; j < todoList.length; j++) {
+                recentCategory.push(todoList[j].category);
+            }
+        }
+    }
+
+    return recentCategory;
+}
 
 // 최근동안 어떠한 일을 적게 했는지 알아봄
-function checkRecentMinWork({ targetIndex, recentData }) {
+function checkRecentMinWork(recentCategory) {
     let workCount = 0;
     let exerciseCount = 0;
     let restCount = 0;
 
-    recentData.forEach((entry) => {
-        entry.todoList.forEach((todo) => {
-            if (todo.category === "일") {
-                workCount++;
-            } else if (todo.category === "운동") {
-                exerciseCount++;
-            } else if (todo.category === "휴식") {
-                restCount++;
-            }
-        });
+    recentCategory.forEach((todo) => {
+        if (todo === "일") {
+            workCount++;
+        } else if (todo === "운동") {
+            exerciseCount++;
+        } else if (todo === "휴식") {
+            restCount++;
+        }
     });
 
     const min = Math.min(workCount, exerciseCount, restCount);
-
-    return [min, userDate];
-}
-// 새로운 할일 추가(챗봇 추천 받은거로)
-function addNewTodo(categoryUser, userInputTitle) {
-    // const $likeBtn = document.getElementById('likeBtn');
-
-    const { year, month, day, hour, min } = dateObject;
-    let newTodo = {
-        id: taskData.length + 1,
-        date: {
-            year: year,
-            month: month,
-            day: day,
-        },
-        todoList: [
-            {
-                time: `${hour}:${min}`,
-                title: userInputTitle,
-                category: categoryUser,
-            },
-        ],
-    };
-    taskData.push(newTodo);
-}
-
-// 챗봇에게 할일 추천 받기
-function recommendTodo(buttonText) {
-    //입력 받은 날짜를 기반으로 지금까지 있는 task 중 어떠한 일을 가장 적게 했는지 알려줌
-    const returnedData = checkRecentWork(buttonText);
-    let min = returnedData[0];
-    let userDate = returnedData[1];
-    let less = "";
-
-    if (min === workCount) {
-        less = "일";
-    } else if (min === exceriseCount) {
-        less = "운동";
-    } else {
-        less = "휴식";
+    let minV = "휴식";
+    if (min === exerciseCount) {
+        minV = "운동";
     }
-
+    if (min === workCount) {
+        minV = "일";
+    }
     const $recommendation = document.createElement("div");
-    $recommendation.innerHTML = `최근동안 가장 적게 활동한 ${less}을 해보시는 건 어떨까요? 
-                                <button id="likeBtn" type = "radio">좋아요</button> 
-                                <button id="disBtn" type = "radio">실어요</button> `;
+    $recommendation.innerHTML = `최근동안 가장 적게 활동한 ${minV}을 해보시는 건 어떨까요?
+                                <div id = confirmBtnRecommend> 
+                                <button id="likeBtn">좋아요</button> 
+                                <button id="disBtn">실어요</button>
+                                </div> `;
+    $recommendation.classList.add("callyResponse");
     $response.appendChild($recommendation);
 
-    // 좋아요 누르면 -> taksData에 추가됨
     const $likeBtn = document.getElementById("likeBtn");
-    if (($likeBtn.checked = "true")) {
-        addNewTodo(less);
-    } else {
-        const $noNeed = document.createElement("div");
-        $noNeed.innerHTML = `필요 없으시군요! 그럼 다음에 이용해보세요 ;)`;
-        $response.appendChild($noNeed);
-    }
+    const $disBtn = document.getElementById("disBtn");
+
+    console.log($likeBtn);
+
+    // 좋아요 버튼 클릭 시
+    $likeBtn.addEventListener("click", () => {
+    
+            const $Need = document.createElement("div");
+            $Need.classList.add("callyResponse");
+            $Need.innerHTML = `카테고리가 정해졌으니 연관된 일을 캘린더에 추가해보세요 ;)`;
+            $response.appendChild($Need);
+        
+    });
+
+    // 싫어요 버튼 클릭 시
+    $disBtn.addEventListener("click", () => {
+        
+            const $noNeed = document.createElement("div");
+            $noNeed.classList.add("callyResponse");
+            $noNeed.innerHTML = `필요 없으시군요! 그럼 다음에 이용해보세요 ;)`;
+            $response.appendChild($noNeed);
+        
+    });
+
 }
+
+
+
+
+
+
+
 
 // ========================4. 사용자가 궁금한 사항 직접 입력함 ====================//
 function customByUser(buttonText) {
@@ -406,12 +377,12 @@ function backToFirst(){
     $input.addEventListener('submit', (e)=>{
         e.preventDefault();
         const inputInit = $input.querySelector('input').textContent;
-        if(inputInit === '처음으로');
+        if(inputInit === '처음으로' || inputInit === '메뉴');
         $response.innerHTML = '';
     });
     $arrow.addEventListener('click', (e) =>{
         const inputInit = $input.querySelector('input').textContent;
-        if(inputInit === '처음으로');
+        if(inputInit === '처음으로' || inputInit === '메뉴');
         $response.innerHTML = '';
     });
 }
@@ -429,7 +400,7 @@ function backToFirst(){
         const buttonText = e.target.textContent.trim();
         // Perform different actions based on the text content
         switch (buttonText) {
-            case "1. 일정 조회":
+            case "일정 조회":
                 getDateFromUser(buttonText);
                 // Wait for user confirmation and then get the updated dateObject
                 const $confirmButton1 = document.getElementById("confirm");
@@ -438,37 +409,39 @@ function backToFirst(){
                     // Use the updated dateObject to get recent data
                     const { targetIndex, recentData } =
                         getRecentData(updatedDateObject);
-                    checkSchedule({ targetIndex, recentData });
+                    const min = checkSchedule({ targetIndex, recentData });
+                    console.log(min);
                 });
                 break;
-            case "2. 일정 추가":
-                // console.log(e.target);
+            // case "2. 일정 추가":
+            //     // console.log(e.target);
 
-                getDateFromUser(buttonText);
-                const $confirmButton2 = document.getElementById("confirm");
-                $confirmButton2.addEventListener("click", () => {
-                    const dateObject = handleConfirmButtonClick();
-                    console.log(`hihi`,dateObject);
+            //     getDateFromUser(buttonText);
+            //     const $confirmButton2 = document.getElementById("confirm");
+            //     $confirmButton2.addEventListener("click", () => {
+            //         const dateObject = handleConfirmButtonClick();
+            //         console.log(`hihi`,dateObject);
 
-                    addNewTodoViaChat(dateObject);
-                });
-                break;
-            case "3. 일정 추천":
+            //         addNewTodoViaChat(dateObject);
+            //     });
+            //     break;
+            case "일정 추천":
                 getDateFromUser(buttonText);
                 const $confirmButton3 = document.getElementById("confirm");
                 $confirmButton3.addEventListener("click", () => {
-                    const updatedDateObject3 = handleConfirmButtonClick();
-                    const { targetIndex3, recentData3 } = getRecentData(updatedDateObject3);
-                    checkRecentMinWork({targetIndex3, recentData3});
-                    recommendTodo();
-                });
-                console.log("일정 추천 clicked");
-                recommendTodo(buttonText);
-                break;
-            case "4. 직접 입력":
+                disableButtonsExcept($clicked);
 
+                    const updatedDateObject3 = handleConfirmButtonClick();
+                    const recentCategory = getRecentCategory(updatedDateObject3);
+                    checkRecentMinWork(recentCategory);
+                });
+                break;
+            case "직접 입력":
                 customByUser(buttonText);
                 backToFirst();
+                break;
+            case "처음으로 이동":
+                $response.innerHTML = '';
                 break;
             default:
                 showFirstChat();
@@ -480,13 +453,17 @@ function backToFirst(){
 
 function returnNewTodo() {
     const newTodo = $input.querySelector("input").value;
+
     // 저장해둔 input 값을 채팅 li에 추가
     const $newResponse = document.createElement("li");
     $newResponse.textContent = newTodo;
     $response.appendChild($newResponse);
-
+    
+    
     $input.querySelector("input").value = "";
+
 }
+
 
 $input.addEventListener("input", handleInputEvent);
 
@@ -509,4 +486,37 @@ $arrow.addEventListener("click", handleClickEvent);
 function handleClickEvent(e) {
     e.preventDefault();
     returnNewTodo();
+}
+
+$input.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const inputInit = $input.querySelector('input').textContent;
+    if(inputInit === '처음으로' || inputInit === '메뉴');
+    $response.innerHTML = '';
+});
+$arrow.addEventListener('click', (e) =>{
+    const inputInit = $input.querySelector('input').textContent;
+    if(inputInit === '처음으로' || inputInit === '메뉴');
+    $response.innerHTML = '';
+});
+
+// 다른 버튼들을 비활성화하는 함수
+function disableButtonsExcept($clicked) {
+    $chatPart.querySelectorAll("li").forEach($button => {
+        if ($button !== $clicked) {
+            $button.removeEventListener("click", handleClickEvent);
+            // 시각적으로 비활성화 상태를 나타내기 위한 스타일 변경
+            $button.classList.add("disabled");
+        }
+    });
+}
+
+// 입력란을 수정할 수 없도록 하는 함수
+function disableInput() {
+    $input.querySelector("input").setAttribute("disabled", "true");
+}
+
+// 입력란을 수정할 수 있도록 하는 함수
+function enableInput() {
+    $input.querySelector("input").removeAttribute("disabled");
 }
