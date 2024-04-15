@@ -45,6 +45,12 @@ const renderCalendar = () => {
     dateElement.dataset.month = String(viewMonth + 1).padStart(2, "0");
 
     dateElement.dataset.day = String(day).padStart(2, "0");
+
+    if (viewYear === new Date().getFullYear() && viewMonth === new Date().getMonth() && day === new Date().getDate()) {
+      dateElement.classList.add("today");
+    }
+
+
     return dateElement.outerHTML;
   });
   // const modifiedDates = dates.map(date => `<div class="date" >${date}</div>`); // 년도 월 날짜 각각 데이터셋으로 (2024-)

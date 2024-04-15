@@ -130,6 +130,28 @@ body {
 #calendarMain .date:nth-child(7n) {
   color: #396EE2;
 }
+
+
+.date.today {
+  position: relative; /* 부모 요소의 위치 설정 */
+
+}
+
+.date.today::before {
+  content: "";
+  display: block;
+  width: 25px;
+  height: 25px;
+  opacity: 0.5;
+  border-radius: 50%;
+  background-color: #888c8c;
+  position: absolute;
+  top: 9px; /* 부모 요소의 상단으로 올리기 */
+  left: calc(50% - 4px); 
+  transform: translateX(-350%); 
+  z-index: 1;
+}
+
 #calendarMain .date .task_list{
   width: 100%;
   margin-top: 10px;
