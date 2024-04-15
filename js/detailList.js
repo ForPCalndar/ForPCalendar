@@ -12,8 +12,8 @@ $calendarDates.forEach(($date) => {
     if (!e.target.closest('.date')) return;
     e.stopPropagation()
 
-    const target = e.target.closest('.date')
-    // console.log('target :',target);
+    const target = e.target;
+    console.log('target :',target);
 
     selctedDateData = getDateDatas(target);
     // console.log("selctedDateData:", selctedDateData);

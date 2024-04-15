@@ -149,7 +149,7 @@ body {
   top: 9px; /* 부모 요소의 상단으로 올리기 */
   left: calc(50% - 4px); 
   transform: translateX(-350%); 
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 #calendarMain .date .task_list{
@@ -157,6 +157,7 @@ body {
   margin-top: 10px;
   height: calc(100% - 30px);
   overflow-y: scroll;
+  pointer-events: none;
 }
 #calendarMain .date .task_list li{
   width: 100%;

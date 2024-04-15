@@ -65,6 +65,8 @@ setNow();
 $addTaskModalSubmitBtn.addEventListener("click", () => {
   const title = $addTaskModal.querySelector(".add_task-head input").value;
 
+  console.log("addBtn:",selectedDay);
+
   // category
   let category = getCategory($addTaskModal);
   if (!category) {
@@ -124,8 +126,8 @@ $addTaskModalSubmitBtn.addEventListener("click", () => {
   // // 현재 선택된 날짜의 투두 리스트 추가시 ui 추가
   // console.log("sd:", selectedDay);
   $taskList.append(createTaskLi(newTodoList));
-  // $taskList.textContent='ddf'
-  console.log(createTaskLi(newTodoList));
+  // if (dateSet)
+  // console.log(createTaskLi(newTodoList));
   setModalInitaial();
   const $nothingLi = document.querySelector(
     "#task_list .task_list-item-nothing"
